@@ -275,7 +275,11 @@ func (h *Hosts) RenderHostsFile() string {
 	hf := ""
 
 	for _, hfl := range h.hostFileLines {
-		hf = hf + fmt.Sprintln(lineFormatter(hfl))
+		myLine := fmt.Sprintln(lineFormatter(hfl))
+		if myLine == "\n" || myLine == "" {
+			continue
+		}
+		hf = hf + myLine
 	}
 
 	return hf
@@ -363,13 +367,15 @@ func removeHFLElement(slice []HostFileLine, s int) []HostFileLine {
 
 // lineFormatter
 func lineFormatter(hfl HostFileLine) string {
-
 	if hfl.LineType < ADDRESS {
 		return hfl.Raw
 	}
 
-	if len(hfl.Comment) > 0 {
-		return fmt.Sprintf("%-16s %s #%s", hfl.Address, strings.Join(hfl.Hostnames, " "), hfl.Comment)
+	s := ""
+	for _, h := range hfl.Hostnames {
+		if h == "" {
+			continue
+		}
+		s = s + fmt.Sprintf("%-16s %s\n", hfl.Address, h)
 	}
-	return fmt.Sprintf("%-16s %s", hfl.Address, strings.Join(hfl.Hostnames, " "))
 }
