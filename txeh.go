@@ -378,4 +378,5 @@ func lineFormatter(hfl HostFileLine) string {
 		}
 		s = s + fmt.Sprintf("%-16s %s\n", hfl.Address, h)
 	}
+	return s
 }
